@@ -18,6 +18,20 @@ This file contains the configuration and build instructions.
 
 Why is the toolkit named Junto? The core code was written while Partha Talukdar was at the University of Pennsylvania, and Ben Franklin (the founder of the University) established [a club called Junto](http://en.wikipedia.org/wiki/Junto_(club)) that provided a structured forum for him and his friends to debate and exchange knowledge. This has a nice parallel with how label propagation works: nodes are connected and influence each other based on their connections. Also "junto" means "along" and "together" in a number of Latin languages, and carries the connotation of cooperation---also a good fit for label propagation.
 
+## Using Junto
+
+In SBT:
+
+    libraryDependencies += "org.scalanlp" % "junto" % "1.5.0"
+
+In Maven:
+
+    <dependency>
+       <groupId>org.scalanlp</groupId>
+       <artifactId>junto</artifactId>
+       <version>1.5.0</version>
+    </dependency>
+
 
 ## Requirements
 
