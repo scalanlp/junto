@@ -6,6 +6,8 @@ import java.util.{ArrayList,HashMap,Iterator}
 import upenn.junto.util._
 import scala.collection.JavaConversions._
 import com.typesafe.scalalogging.log4j.Logging
+import java.io.OutputStreamWriter
+import java.io.FileOutputStream
 
 class Graph extends Logging {
 
@@ -185,7 +187,7 @@ object GraphIo extends Logging {
     var correct_doc_cnt = 0
     var total_doc_cnt = 0
 
-    val bw = new BufferedWriter(new FileWriter(outputFile))
+    val bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"))
 
     for (vName <- graph.vertices.keySet) {
       val v = graph.vertices.get(vName)
