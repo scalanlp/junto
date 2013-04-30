@@ -18,7 +18,6 @@ package upenn.junto.app
 
 import scala.io.Source
 import java.io._
-import org.clapper.argot._
 import com.typesafe.scalalogging.log4j.Logging
 
 
@@ -31,36 +30,23 @@ object OutputExtractor extends Logging {
   val NodeRE = """([^_]+)_(.+)""".r
 
   // Set up the options parser
-  import ArgotConverters._
-  val parser = new ArgotParser("Junto Output Extractor", preUsage=Some("Junto"))
-
-  val typeToExtractOption = 
-    parser.multiOption[String](List("t", "type"), "nodetype",
-                               "The type of node to extract information for. E.g. if you have WORD_hello, then use -t WORD to get the distribution for WORD_hello and not FOO_hello. If no type is given, then all node types are extracted.")
-
-  val cutAtDummyFlag = 
-    parser.flag[Boolean](List("d", "dummy"),
-                         "Truncate distributions at the __DUMMY__ label, and renormalize.")
-  
-  val input = parser.parameter[String]("input", "Input file to read", false)
-  val output = parser.parameter[String]("outputfile", "Output file to write to.", false)
 
   /**
    * Main method -- do the work. It might be good eventually to have the values for
    * each node type dumped to a node-specific file. 
    */
   def main(args: Array[String]) = {
-    try { parser.parse(args) }
-    catch { case e: ArgotUsageException => logger.info(e.message); sys.exit(0) }
 
-    val typesToExtract = typeToExtractOption.value toSet
-    val doAllNodeTypes = typesToExtract isEmpty
+    val opts = OutputExtractorOpts(args)
 
-    val cutAtDummy = cutAtDummyFlag.value getOrElse(false)
+    val typesToExtract = opts.typeToExtract().toSet
+    val doAllNodeTypes = typesToExtract.isEmpty
 
-    val outputFile = new FileWriter(new File(output.value.get))
+    val cutAtDummy = opts.cutAtDummy()
+
+    val outputFile = new FileWriter(new File(opts.output()))
     
-    for (line <- Source fromFile(new File(input.value.get)) getLines) {
+    for (line <- Source fromFile(new File(opts.input())) getLines) {
       
       val Array(nodename, gold, injected, estimated, isTestNode, mrr) = line split('\t')
       val NodeRE(nodetype,nodeval) = nodename
@@ -97,3 +83,31 @@ object OutputExtractor extends Logging {
 
 
 
+/**
+ * An object that sets up the configuration for command-line options using
+ * Scallop and returns the options, ready for use.
+ *
+ */
+object OutputExtractorOpts {
+
+  import org.rogach.scallop._
+  
+  def apply(args: Array[String]) = new ScallopConf(args) {
+    banner("""
+Read Junto output to get distributions for just words, and only for labels that have higher probability than __DUMMY__.
+
+For usage see below.
+	     """)
+    val typeToExtract = 
+      opt[List[String]]("type", descr="The type of node to extract information for. E.g. if you have WORD_hello, then use -t WORD to get the distribution for WORD_hello and not FOO_hello. If no type is given, then all node types are extracted.")
+
+
+    val cutAtDummy = opt[Boolean]("dummy", descr="Truncate distributions at the __DUMMY__ label, and renormalize.")
+
+    val input = trailArg[String]("input", descr="Input file to read")
+    val output = trailArg[String]("output", descr="The file to save the predictions of the evaluation events.")
+
+
+    val cost = opt[Double]("cost", default=Some(1.0), validate = (0<), descr="The cost parameter C. Bigger values means less regularization (more fidelity to the training set).")
+  }
+}
