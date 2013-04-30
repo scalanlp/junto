@@ -22,14 +22,14 @@ Why is the toolkit named Junto? The core code was written while Partha Talukdar 
 
 In SBT:
 
-    libraryDependencies += "org.scalanlp" % "junto" % "1.5.0"
+    libraryDependencies += "org.scalanlp" % "junto" % "1.5"
 
 In Maven:
 
     <dependency>
        <groupId>org.scalanlp</groupId>
        <artifactId>junto</artifactId>
-       <version>1.5.0</version>
+       <version>1.5</version>
     </dependency>
 
 
