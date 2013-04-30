@@ -29,12 +29,8 @@ import com.typesafe.scalalogging.log4j.Logging
  */
 object JuntoRunner extends Logging {
 
-  def apply (graph: Graph) {
-    apply(graph, 1.0, .01, .01, 10, false)
-  }
-
-  def apply (graph: Graph, mu1: Double, mu2: Double, mu3: Double, 
-             maxIters: Int, verbose: Boolean) { 
+  def apply (graph: Graph, mu1: Double = 1.0, mu2: Double = .01, mu3: Double = .01, 
+             maxIters: Int = 10, verbose: Boolean = false) { 
     apply("mad", graph, maxIters, mu1, mu2, mu3, Integer.MAX_VALUE, 
           false, verbose, new ArrayList[Map[String,Double]])
   }
