@@ -75,7 +75,6 @@ object OutputExtractor extends Logging {
         
       }
     }
-    outputFile.flush
     outputFile.close
   }
 }
