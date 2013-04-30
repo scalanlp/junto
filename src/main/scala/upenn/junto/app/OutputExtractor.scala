@@ -101,13 +101,11 @@ For usage see below.
     val typeToExtract = 
       opt[List[String]]("type", descr="The type of node to extract information for. E.g. if you have WORD_hello, then use -t WORD to get the distribution for WORD_hello and not FOO_hello. If no type is given, then all node types are extracted.")
 
-
     val cutAtDummy = opt[Boolean]("dummy", descr="Truncate distributions at the __DUMMY__ label, and renormalize.")
 
     val input = trailArg[String]("input", descr="Input file to read")
+
     val output = trailArg[String]("output", descr="The file to save the predictions of the evaluation events.")
 
-
-    val cost = opt[Double]("cost", default=Some(1.0), validate = (0<), descr="The cost parameter C. Bigger values means less regularization (more fidelity to the training set).")
   }
 }
