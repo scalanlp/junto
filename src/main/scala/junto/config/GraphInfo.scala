@@ -16,12 +16,8 @@ package junto.config
  * limitations under the License.
  */
 
-class Edge (val source: String, val target: String, val weight: Double) extends Serializable {
+case class Edge (source: String, target: String, weight: Double = 1.0) {
   override def toString = source + "\t" + target + "\t" + weight
-}
-
-object EdgeCreator {
-  def apply (source: String, target: String) = new Edge(source, target, 1.0)
 }
 
 object EdgeFileWriter {
@@ -40,17 +36,13 @@ object EdgeFileReader {
       // source target edge_weight
       val fields = line.trim split("\t")
       assert(fields.length == 3, "Invalid entry in graph file: " + line)
-      new Edge(fields(0), fields(1), fields(2).toDouble)
+      Edge(fields(0), fields(1), fields(2).toDouble)
     }).toList
   }
 }
 
-class Label (val vertex: String, val label: String, val score: Double) extends Serializable {
+case class Label (vertex: String, label: String, score: Double = 1.0) {
   override def toString = vertex + "\t" + label + "\t" + score
-}
-
-object LabelCreator {
-  def apply (vertex: String, label: String) = new Label(vertex, label, 1.0)
 }
 
 object LabelFileWriter {
@@ -67,7 +59,7 @@ object LabelFileReader {
   def apply (filename: String): List[Label] = {
     (for (line <- io.Source fromFile(filename) getLines) yield {
       val Array(vertex, label, score) = line.trim split("\t")
-      new Label(vertex, label, score.toDouble)
+      Label(vertex, label, score.toDouble)
     }).toList
   }
 }

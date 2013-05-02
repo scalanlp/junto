@@ -41,15 +41,15 @@ object PrepAttachTest {
 
   def createEdges (info: List[PrepInfo]): List[Edge] = {
     (for (item <- info) yield {
-      List(EdgeCreator(idNode(item.id), verbNode(item.verb)),
-           EdgeCreator(idNode(item.id), nounNode(item.noun)),
-           EdgeCreator(idNode(item.id), prepNode(item.prep)),
-           EdgeCreator(idNode(item.id), pobjNode(item.pobj)))
+      List(Edge(idNode(item.id), verbNode(item.verb)),
+           Edge(idNode(item.id), nounNode(item.noun)),
+           Edge(idNode(item.id), prepNode(item.prep)),
+           Edge(idNode(item.id), pobjNode(item.pobj)))
     }).toList.flatten
   }
 
   def createLabels (info: List[PrepInfo]): List[Label] =
-    info map { item => LabelCreator(idNode(item.id), verbNode(item.label)) }
+    info map { item => Label(idNode(item.id), verbNode(item.label)) }
 
   def main (args: Array[String]) {
     val ppadir = args(0)
