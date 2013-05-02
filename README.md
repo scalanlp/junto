@@ -14,9 +14,15 @@ Additionally, LP_ZGL, one of the first label propagation algorithms is also impl
 
 * Xiaojin Zhu and Zoubin Ghahramani. Learning from labeled and unlabeled data with label propagation.  Technical Report CMU-CALD-02-107, Carnegie Mellon University, 2002.
 
-This file contains the configuration and build instructions. 
-
 Why is the toolkit named Junto? The core code was written while Partha Talukdar was at the University of Pennsylvania, and Ben Franklin (the founder of the University) established [a club called Junto](http://en.wikipedia.org/wiki/Junto_(club)) that provided a structured forum for him and his friends to debate and exchange knowledge. This has a nice parallel with how label propagation works: nodes are connected and influence each other based on their connections. Also "junto" means "along" and "together" in a number of Latin languages, and carries the connotation of cooperation---also a good fit for label propagation.
+
+## What's inside
+
+The latest stable release of Junto is 1.5. 
+
+The development version is 1.6---some fairly big changes are coming. For now, one important difference to note is that all classes that were `upenn.junto._` are now just `junto._`, in line with other [ScalaNLP projects](https://github.com/scalanlp).
+
+See the [CHANGELOG](https://github.com/scalanlp/junto/wiki/CHANGELOG) for changes in previous versions.
 
 ## Using Junto
 
@@ -85,16 +91,6 @@ $ bin/build
 ```
 
 This will drop you into the SBT interface.  Many [other build targets](https://github.com/harrah/xsbt/wiki/Getting-Started-Running) are supported.
-
-If you wish to use Junto as an API, you can create a self-contained
-assembly jar by using the "assembly" action in SBT. Also, you can just do:
-
-```
-$ bin/build assembly
-```
-
-Maven style dependencies are [coming soon](https://github.com/scalanlp/junto/issues/1).
-
 
 ## Trying it out
 
