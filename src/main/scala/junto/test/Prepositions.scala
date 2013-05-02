@@ -45,7 +45,7 @@ object PrepAttachTest {
            Edge(idNode(item.id), nounNode(item.noun)),
            Edge(idNode(item.id), prepNode(item.prep)),
            Edge(idNode(item.id), pobjNode(item.pobj)))
-    }).toList.flatten
+    }).flatten
   }
 
   def createLabels (info: List[PrepInfo]): List[Label] =
