@@ -38,8 +38,8 @@ EOF
 CLASS=
 
 case $CMD in
-    config) CLASS=upenn.junto.app.JuntoConfigRunner;;
-    extract) CLASS=upenn.junto.app.OutputExtractor;;
+    config) CLASS=junto.app.JuntoConfigRunner;;
+    extract) CLASS=junto.app.OutputExtractor;;
     run) CLASS=$1; shift;;
     help) help; exit 1;;
     *) echo "Unrecognized command: $CMD"; help; exit 1;;
