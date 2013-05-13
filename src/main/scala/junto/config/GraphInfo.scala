@@ -16,6 +16,10 @@ package junto.config
  * limitations under the License.
  */
 
+case class VertexName(name: String, vtype: String = "VERTEX") {
+  override val toString = vtype+"::"+name
+}
+
 case class Edge (source: String, target: String, weight: Double = 1.0) {
   override def toString = source + "\t" + target + "\t" + weight
 }
@@ -50,7 +54,6 @@ object LabelFileWriter {
   def apply (seeds: List[Label], seedFile: String) = {
     val out = new FileWriter(new File(seedFile))
     seeds foreach { seed => out.write(seed.toString + "\n") }
-    out.flush
     out.close
   }
 }

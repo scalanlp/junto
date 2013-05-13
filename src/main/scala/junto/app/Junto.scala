@@ -17,7 +17,6 @@ package junto.app
  */
 
 import java.util.{ArrayList,Hashtable}
-import gnu.trove.map.hash.TObjectDoubleHashMap
 import junto.algorithm._
 import junto.config._
 import junto.graph._

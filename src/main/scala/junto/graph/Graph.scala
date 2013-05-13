@@ -15,9 +15,7 @@ class Graph extends Logging {
   val labels = new TObjectDoubleHashMap[String]
   var isSeedInjected = false
 
-  def AddVertex (name: String, label: String): Vertex = AddVertex(name, label, 1.0)
-
-  def AddVertex (name: String, label: String, weight: Double): Vertex = {
+  def AddVertex (name: String, label: String, weight: Double=1.0): Vertex = {
     val v = vertices.get(name)
 		
     // Add if the vertex is already not preset. Or, if the vertex
