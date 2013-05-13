@@ -20,37 +20,42 @@ object JuntoContext {
    *   (c) normalizing the scores of all labels extracted (true by default)
    */
   def getEstimatedLabels(
-    vertex: Vertex, 
-    onlyBetterThanDummy: Boolean = false,
-    normalize: Boolean = true
-  ) = {
-    val fullScores = vertex.estimatedLabels
-    val sorted = 
-      (for (key <- fullScores.keys) 
-       yield (key.toString, fullScores.get(key))
-       ).sortBy(-_._2)
-
-    val indexOfDummy = sorted.indexWhere(_._1 == "__DUMMY__")
-    
-    val noDummy = 
-      if (onlyBetterThanDummy) sorted.take(indexOfDummy)
-      else {
-        val (front,back) = sorted.splitAt(indexOfDummy)
-        front ++ (back.drop(1))
-      }
-    
-    val finalized =
-      if (!normalize) noDummy
-      else {
-        val sum = noDummy.unzip._2.sum
-        for ((label,score) <- noDummy) yield (label,score/sum)
-      }
-
-    finalized
+    vertex: Vertex, cutAtDummy: Boolean = false, normalize: Boolean = true
+  ): Seq[(String,Double)] = {
+    val sorted = sortLabels(vertex.estimatedLabels)
+    val noDummy = removeDummy(sorted, cutAtDummy)
+    if (!normalize) noDummy else normalizeScores(noDummy)
   }
 
 
+  /**
+   * After running LP and given a vertex, sort the labels, remove the DUMMY label,
+   * take the top N labels, and normalize the scores of those top N.
+   */ 
+  def getTopLabels(vertex: Vertex, numToKeep: Int = 1): Seq[(String,Double)] =
+    normalizeScores(removeDummy(sortLabels(vertex.estimatedLabels)).take(numToKeep))
+
+  /**
+   * Sort the labels contained in a Trove map, and return as a Seq of (String, Double)
+   * tuples.
+   */ 
+  import gnu.trove.map.hash.TObjectDoubleHashMap
+  def sortLabels(labelMap: TObjectDoubleHashMap[String]): Seq[(String,Double)] =
+    (for (key <- labelMap.keys) yield (key.toString, labelMap.get(key))).sortBy(-_._2)
 
 
+  private def removeDummy(labels: Seq[(String,Double)], cutAtDummy: Boolean = false) = {
+    val indexOfDummy = labels.indexWhere(_._1 == "__DUMMY__")
+    if (cutAtDummy) labels.take(indexOfDummy)
+    else {
+      val (front,back) = labels.splitAt(indexOfDummy)
+      front ++ (back.drop(1))
+    }
+  }
+
+  private def normalizeScores(labels: Seq[(String,Double)]) = {
+    val sum = labels.unzip._2.sum
+    for ((label,score) <- labels) yield (label,score/sum)
+  }
 
 }
