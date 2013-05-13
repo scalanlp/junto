@@ -11,7 +11,19 @@ object JuntoContext {
   import junto.graph.Vertex
   import scala.collection.JavaConversions._
 
-  def getEstimatedLabels(vertex: Vertex, normalize: Boolean = true, onlyBetterThanDummy: Boolean = false) = {
+
+  /**
+   * After running LP, each vertex has an estimated set of scores for each
+   * label. This method extracts those in a convenient manner by
+   *   (a) excising the DUMMY label
+   *   (b) getting only the labels better than DUMMY if requested (false by default)
+   *   (c) normalizing the scores of all labels extracted (true by default)
+   */
+  def getEstimatedLabels(
+    vertex: Vertex, 
+    onlyBetterThanDummy: Boolean = false,
+    normalize: Boolean = true
+  ) = {
     val fullScores = vertex.estimatedLabels
     val sorted = 
       (for (key <- fullScores.keys) 
