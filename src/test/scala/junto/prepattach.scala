@@ -24,32 +24,6 @@ import junto.config._
 
 class PrepAttachSpec extends FunSpec {
 
-  def idNode (s: String)   = s+"_ID"
-  def verbNode (s: String) = s+"_VERB"
-  def nounNode (s: String) = s+"_NOUN"
-  def prepNode (s: String) = s+"_PREP"
-  def pobjNode (s: String) = s+"_POBJ"
-
-  def createEdges (info: List[PrepInfo]): List[Edge] = {
-    (for (item <- info) yield {
-      List(Edge(idNode(item.id), verbNode(item.verb)),
-           Edge(idNode(item.id), nounNode(item.noun)),
-           Edge(idNode(item.id), prepNode(item.prep)),
-           Edge(idNode(item.id), pobjNode(item.pobj)))
-    }).flatten
-  }
-
-  def createLabels (info: List[PrepInfo]): List[Label] =
-    info map { item => Label(idNode(item.id), verbNode(item.label)) }
-
-
-  def getInfo(inputFile: String) = io.Source
-    .fromInputStream(this.getClass.getResourceAsStream(inputFile))
-    .getLines
-    .toList
-    .map(PrepInfoFromLine)
-  
-
   describe("Prepositional Phrase Attachment") {
     it ("should construct the graph, propagate labels, and evaluate") {
 
@@ -72,16 +46,40 @@ class PrepAttachSpec extends FunSpec {
 
   }
 
+  def idNode (s: String)   = s+"_ID"
+  def verbNode (s: String) = s+"_VERB"
+  def nounNode (s: String) = s+"_NOUN"
+  def prepNode (s: String) = s+"_PREP"
+  def pobjNode (s: String) = s+"_POBJ"
 
+  def createEdges (info: List[PrepInfo]): List[Edge] = {
+    (for (item <- info) yield {
+      List(Edge(idNode(item.id), verbNode(item.verb)),
+           Edge(idNode(item.id), nounNode(item.noun)),
+           Edge(idNode(item.id), prepNode(item.prep)),
+           Edge(idNode(item.id), pobjNode(item.pobj)))
+    }).flatten
+  }
+
+  def createLabels (info: List[PrepInfo]): List[Label] =
+    info.map(item => Label(idNode(item.id), verbNode(item.label)))
+
+
+  def getInfo(inputFile: String) = io.Source
+    .fromInputStream(this.getClass.getResourceAsStream(inputFile))
+    .getLines
+    .toList
+    .map(PrepInfoFromLine)
+  
 }
 
-class PrepInfo (val id: String,   val verb: String, val noun: String, 
-                val prep: String, val pobj: String, val label: String)
+case class PrepInfo (
+  id: String, verb: String, noun: String, prep: String, pobj: String, label: String)
 
 object PrepInfoFromLine extends (String => PrepInfo) {
   def apply (line: String) = {
-    val Array(id, verb, noun, prep, pobj, label) = line split(" ")
-    new PrepInfo(id, verb, noun, prep, pobj, label)
+    val Array(id, verb, noun, prep, pobj, label) = line.split(" ")
+    PrepInfo(id, verb, noun, prep, pobj, label)
   }
 }
 
