@@ -9,6 +9,7 @@ package junto
 object JuntoContext {
 
   import junto.graph.Vertex
+  import junto.config.Label
   import scala.collection.JavaConversions._
 
 
@@ -41,6 +42,39 @@ object JuntoContext {
     val labels = removeDummy(sortLabels(vertex.estimatedLabels))
     if (labels.length == 0) defaultLabel else labels.head._1
   }
+
+  /**
+   * Returns the accuracy of the graph for a given set of vertices and their
+   * corresponding gold labels.
+   */ 
+  //def score(evalLabels: Seq[Label], graph: junto.graph.Graph, defaultLabel: String): Double = {
+  //  val evalVertexIds = evalLabels.map(_.vertex)
+  //  val predictions = 
+  //    getVertices(graph, evalVertexIds).map(vertex => topLabel(vertex, defaultLabel))
+  //  val paired = predictions.zip(evalLabels.map(_.label))
+  //  val numCorrect = paired.filter { case(p,g) => p==g }.length
+  //  numCorrect/paired.length.toDouble
+  //}
+
+  def score(
+    evalLabels: Seq[Label], graph: junto.graph.Graph, defaultLabel: String): (Double,Double) = {
+    val evalIds = evalLabels.map(_.vertex)
+    val predictions = getVertices(graph, evalIds).map(vertex => getEstimatedLabels(vertex, normalize=false))
+    val best = predictions.map(vlabels => if (vlabels.length>0) vlabels.head._1 else defaultLabel)
+
+    val vertexMrr = for ((sortedLabels, gold) <- predictions.zip(evalLabels.map(_.label))) yield {
+      val goldRank = sortedLabels.indexWhere(_._1 == gold)
+      if (goldRank > -1) 1.0/(goldRank + 1.0) else 0
+    }
+
+    val avgMrr = vertexMrr.sum/evalIds.length
+    val paired = best.zip(evalLabels.map(_.label))
+    val numCorrect = paired.filter { case(p,g) => p==g }.length
+    val accuracy = numCorrect/paired.length.toDouble
+
+    (accuracy, avgMrr)
+  }
+
 
   /**
    * Sort the labels contained in a Trove map, and return as a Seq of (String, Double)

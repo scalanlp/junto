@@ -43,19 +43,11 @@ class PrepAttachSpec extends FunSpec {
       // Create the graph and run label propagation
       val graph = GraphBuilder(edges, seeds, eval)
       JuntoRunner(graph)
+      
+      val (acc, mrr) = score(eval, graph, "V")
 
-      val evalVertexIds = eval.map(_.vertex)
-      val predictions = 
-        getVertices(graph, evalVertexIds).map(vertex => topLabel(vertex, "V"))
-
-      val paired = predictions.zip(eval.map(_.label))
-      val numCorrect = paired.filter { case(p,g) => p==g }.length
-      val numItems = paired.length
-      val accuracy = numCorrect/paired.length.toDouble
-
-      println(s"Counts: $numCorrect / $numItems")
-      println(s"Accuracy: $accuracy")
-
+      println("Accuracy: " + acc)
+      println("MRR: " + mrr)
     }
 
   }
