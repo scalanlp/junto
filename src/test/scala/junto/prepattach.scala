@@ -27,15 +27,14 @@ class PrepAttachSpec extends FunSpec {
   describe("Prepositional Phrase Attachment") {
     it ("should construct the graph, propagate labels, and evaluate") {
 
-      val ppadir = "/data/ppa"
-
       // Convert files to PrepInfo lists
+      val ppadir = "/data/ppa"
       val trainInfo = getInfo(ppadir+"/training")
       val devInfo = getInfo(ppadir+"/devset")
       val testInfo = getInfo(ppadir+"/test")
 
       // Create the edges and seeds
-      val edges = createEdges(trainInfo) ::: createEdges(devInfo) ::: createEdges(testInfo)
+      val edges = createEdges(trainInfo) ++ createEdges(devInfo) ++ createEdges(testInfo)
       val seeds = createLabels(trainInfo)
       val gold = createLabels(devInfo)
 
@@ -46,24 +45,17 @@ class PrepAttachSpec extends FunSpec {
 
   }
 
-  def idNode (s: String)   = s+"_ID"
-  def verbNode (s: String) = s+"_VERB"
-  def nounNode (s: String) = s+"_NOUN"
-  def prepNode (s: String) = s+"_PREP"
-  def pobjNode (s: String) = s+"_POBJ"
-
-  def createEdges (info: List[PrepInfo]): List[Edge] = {
-    (for (item <- info) yield {
-      List(Edge(idNode(item.id), verbNode(item.verb)),
-           Edge(idNode(item.id), nounNode(item.noun)),
-           Edge(idNode(item.id), prepNode(item.prep)),
-           Edge(idNode(item.id), pobjNode(item.pobj)))
-    }).flatten
+  def createEdges (info: Seq[PrepInfo]): Seq[Edge] = {
+    (for (item <- info) yield
+      Seq(Edge(item.idNode, item.verbNode),
+          Edge(item.idNode, item.nounNode),
+          Edge(item.idNode, item.prepNode),
+          Edge(item.idNode, item.pobjNode))
+     ).flatten
   }
 
-  def createLabels (info: List[PrepInfo]): List[Label] =
-    info.map(item => Label(idNode(item.id), verbNode(item.label)))
-
+  def createLabels (info: Seq[PrepInfo]): Seq[Label] =
+    info.map(item => Label(item.idNode, item.label))
 
   def getInfo(inputFile: String) = io.Source
     .fromInputStream(this.getClass.getResourceAsStream(inputFile))
@@ -74,7 +66,17 @@ class PrepAttachSpec extends FunSpec {
 }
 
 case class PrepInfo (
-  id: String, verb: String, noun: String, prep: String, pobj: String, label: String)
+  id: String, verb: String, noun: String, prep: String, pobj: String, label: String) {
+
+  // Helpers for creating nodes of different types.
+  def node(feature: String, nodeType: String) = s"$nodeType::$feature"
+  lazy val idNode = node(id,"ID")
+  lazy val verbNode = node(verb,"VERB")
+  lazy val nounNode = node(noun,"NOUN")
+  lazy val prepNode = node(prep,"PREP")
+  lazy val pobjNode = node(pobj,"POBJ")
+
+}
 
 object PrepInfoFromLine extends (String => PrepInfo) {
   def apply (line: String) = {
