@@ -38,24 +38,19 @@ object JuntoContext {
   def getTopLabels(vertex: Vertex, numToKeep: Int = 1): Seq[(String,Double)] =
     normalizeScores(removeDummy(sortLabels(vertex.estimatedLabels)).take(numToKeep))
 
+  /**
+   * Get the top label for a given vertex. Return the default label otherwise. There
+   * should be an Option returning version of this.
+   */ 
   def topLabel(vertex: Vertex, defaultLabel: String): String = {
     val labels = removeDummy(sortLabels(vertex.estimatedLabels))
     if (labels.length == 0) defaultLabel else labels.head._1
   }
 
   /**
-   * Returns the accuracy of the graph for a given set of vertices and their
-   * corresponding gold labels.
+   * Returns the accuracy and average mean reciprocal rank of the graph for a given
+   * set of vertices and their corresponding gold labels.
    */ 
-  //def score(evalLabels: Seq[Label], graph: junto.graph.Graph, defaultLabel: String): Double = {
-  //  val evalVertexIds = evalLabels.map(_.vertex)
-  //  val predictions = 
-  //    getVertices(graph, evalVertexIds).map(vertex => topLabel(vertex, defaultLabel))
-  //  val paired = predictions.zip(evalLabels.map(_.label))
-  //  val numCorrect = paired.filter { case(p,g) => p==g }.length
-  //  numCorrect/paired.length.toDouble
-  //}
-
   def score(
     evalLabels: Seq[Label], graph: junto.graph.Graph, defaultLabel: String): (Double,Double) = {
     val evalIds = evalLabels.map(_.vertex)
