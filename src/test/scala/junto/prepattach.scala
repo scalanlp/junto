@@ -19,8 +19,10 @@ import org.scalatest.FunSpec
 import io.Source
 
 import java.io._
+import junto.JuntoContext._
 import junto.app._
 import junto.config._
+import collection.JavaConversions._
 
 class PrepAttachSpec extends FunSpec {
 
@@ -30,17 +32,30 @@ class PrepAttachSpec extends FunSpec {
       // Convert files to PrepInfo lists
       val ppadir = "/data/ppa"
       val trainInfo = getInfo(ppadir+"/training")
-      val devInfo = getInfo(ppadir+"/devset")
-      val testInfo = getInfo(ppadir+"/test")
+      val devInfo = getInfo(ppadir+"/devset", trainInfo.length)
+      val testInfo = getInfo(ppadir+"/test", trainInfo.length+devInfo.length)
 
       // Create the edges and seeds
       val edges = createEdges(trainInfo) ++ createEdges(devInfo) ++ createEdges(testInfo)
       val seeds = createLabels(trainInfo)
-      val gold = createLabels(devInfo)
+      val eval = createLabels(devInfo)
 
       // Create the graph and run label propagation
-      val graph = GraphBuilder(edges, seeds, gold)
+      val graph = GraphBuilder(edges, seeds, eval)
       JuntoRunner(graph)
+
+      val evalVertexIds = eval.map(_.vertex)
+      val predictions = 
+        getVertices(graph, evalVertexIds).map(vertex => topLabel(vertex, "V"))
+
+      val paired = predictions.zip(eval.map(_.label))
+      val numCorrect = paired.filter { case(p,g) => p==g }.length
+      val numItems = paired.length
+      val accuracy = numCorrect/paired.length.toDouble
+
+      println(s"Counts: $numCorrect / $numItems")
+      println(s"Accuracy: $accuracy")
+
     }
 
   }
@@ -57,11 +72,15 @@ class PrepAttachSpec extends FunSpec {
   def createLabels (info: Seq[PrepInfo]): Seq[Label] =
     info.map(item => Label(item.idNode, item.label))
 
-  def getInfo(inputFile: String) = io.Source
-    .fromInputStream(this.getClass.getResourceAsStream(inputFile))
-    .getLines
-    .toList
-    .map(PrepInfoFromLine)
+  def getInfo(inputFile: String, startIndex: Int = 0) = {
+    val info = io.Source
+      .fromInputStream(this.getClass.getResourceAsStream(inputFile))
+      .getLines
+      .toList
+
+    for ((line, id) <- info.zip(Stream.from(startIndex))) yield 
+      PrepInfoFromLine(id, line)
+  }
   
 }
 
@@ -69,19 +88,18 @@ case class PrepInfo (
   id: String, verb: String, noun: String, prep: String, pobj: String, label: String) {
 
   // Helpers for creating nodes of different types.
-  def node(feature: String, nodeType: String) = s"$nodeType::$feature"
-  lazy val idNode = node(id,"ID")
-  lazy val verbNode = node(verb,"VERB")
-  lazy val nounNode = node(noun,"NOUN")
-  lazy val prepNode = node(prep,"PREP")
-  lazy val pobjNode = node(pobj,"POBJ")
+  lazy val idNode = VertexName(id,"ID").toString
+  lazy val verbNode = VertexName(verb,"VERB").toString
+  lazy val nounNode = VertexName(noun,"NOUN").toString
+  lazy val prepNode = VertexName(prep,"PREP").toString
+  lazy val pobjNode = VertexName(pobj,"POBJ").toString
 
 }
 
-object PrepInfoFromLine extends (String => PrepInfo) {
-  def apply (line: String) = {
-    val Array(id, verb, noun, prep, pobj, label) = line.split(" ")
-    PrepInfo(id, verb, noun, prep, pobj, label)
+object PrepInfoFromLine extends ((Int,String) => PrepInfo) {
+  def apply (id: Int, line: String) = {
+    val Array(sentenceId, verb, noun, prep, pobj, label) = line.split(" ")
+    PrepInfo(id.toString, verb, noun, prep, pobj, label)
   }
 }
 

@@ -14,6 +14,7 @@ retrieveManaged := true
 
 libraryDependencies ++= Seq(
   "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test",
+  "org.apache.logging.log4j" % "log4j-core" % "2.0-beta3",
   "com.typesafe.akka" % "akka-actor_2.10" % "2.1.0",
   "org.rogach" %% "scallop" % "0.8.1",
   "net.sf.trove4j" % "trove4j" % "3.0.3",

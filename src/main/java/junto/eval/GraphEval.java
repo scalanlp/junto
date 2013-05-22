@@ -27,7 +27,6 @@ public class GraphEval {
         }
       }
     }
-
     return ((1.0 * correct_doc_cnt) / total_doc_cnt);
   }
 	

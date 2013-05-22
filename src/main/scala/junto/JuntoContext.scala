@@ -27,6 +27,8 @@ object JuntoContext {
     if (!normalize) noDummy else normalizeScores(noDummy)
   }
 
+  def getVertices(graph: junto.graph.Graph, vertexIds: Seq[String]) =
+    for (id <- vertexIds) yield graph.vertices.get(id)
 
   /**
    * After running LP and given a vertex, sort the labels, remove the DUMMY label,
@@ -34,6 +36,11 @@ object JuntoContext {
    */ 
   def getTopLabels(vertex: Vertex, numToKeep: Int = 1): Seq[(String,Double)] =
     normalizeScores(removeDummy(sortLabels(vertex.estimatedLabels)).take(numToKeep))
+
+  def topLabel(vertex: Vertex, defaultLabel: String): String = {
+    val labels = removeDummy(sortLabels(vertex.estimatedLabels))
+    if (labels.length == 0) defaultLabel else labels.head._1
+  }
 
   /**
    * Sort the labels contained in a Trove map, and return as a Seq of (String, Double)
