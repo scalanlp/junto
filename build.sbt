@@ -13,6 +13,7 @@ crossPaths := false
 retrieveManaged := true
 
 libraryDependencies ++= Seq(
+  "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test",
   "com.typesafe.akka" % "akka-actor_2.10" % "2.1.0",
   "org.rogach" %% "scallop" % "0.8.1",
   "net.sf.trove4j" % "trove4j" % "3.0.3",
