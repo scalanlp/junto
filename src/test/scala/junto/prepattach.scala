@@ -24,6 +24,10 @@ import junto.app._
 import junto.config._
 import collection.JavaConversions._
 
+
+/**
+ * Test Junto on the prepositional phrase attachment data.
+ */ 
 class PrepAttachSpec extends FunSpec {
 
   describe("Prepositional Phrase Attachment") {
