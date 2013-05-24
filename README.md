@@ -18,9 +18,15 @@ Why is the toolkit named Junto? The core code was written while Partha Talukdar 
 
 ## What's inside
 
-The latest stable release of Junto is 1.5. 
+The latest stable release of Junto is 1.6.0. Here are the changes from version 1.5:
 
-The development version is 1.6---some fairly big changes are coming. For now, one important difference to note is that all classes that were `upenn.junto._` are now just `junto._`, in line with other [ScalaNLP projects](https://github.com/scalanlp).
+* Changed `upenn.junto._` to `junto._`
+* Added junto.JuntoContext, which has functions for making it easier to interact with graphs and pull out results after running label propagation.
+* Added prepositional phrase attachment test.
+* Added some helpers for creating graphs with nodes of different types, e.g. junto.config.VertexName.
+* Now using Scallop for command-line parsing (instead of Argot).
+
+The development version is 1.7.0---some fairly big changes are coming.
 
 See the [CHANGELOG](https://github.com/scalanlp/junto/wiki/CHANGELOG) for changes in previous versions.
 
@@ -28,14 +34,14 @@ See the [CHANGELOG](https://github.com/scalanlp/junto/wiki/CHANGELOG) for change
 
 In SBT:
 
-    libraryDependencies += "org.scalanlp" % "junto" % "1.5"
+    libraryDependencies += "org.scalanlp" % "junto" % "1.6.0"
 
 In Maven:
 
     <dependency>
        <groupId>org.scalanlp</groupId>
        <artifactId>junto</artifactId>
-       <version>1.5</version>
+       <version>1.6.0</version>
     </dependency>
 
 
@@ -48,38 +54,16 @@ In Maven:
 
 The easiest thing to do is to set the environment variables JAVA_HOME and JUNTO_DIR to the relevant locations on your system. Set JAVA_HOME to match the top level directory containing the Java installation you want to use.
 
-For example, on Windows:
+Next, likewise set JUNTO_DIR to be the top level directory where you unzipped the download and then add the directory `JUNTO_DIR/bin` to your path.
 
-```
-C:\> set JAVA_HOME=C:\Program Files\jdk1.5.0_04
-```
-
-or on Unix:
-
-```
-% setenv JAVA_HOME /usr/local/java
-  (csh)
-> export JAVA_HOME=/usr/java
-  (ksh, bash)
-```
-
-Next, likewise set JUNTO_DIR to be the top level directory where you unzipped the download. In Unix, type 'pwd' in the directory where this file is and use the path given to you by the shell as JUNTO_DIR.  You can set this in the same manner as for JAVA_HOME above.
-
-Next, add the directory `JUNTO_DIR/bin` to your path. For example, you can set the path in your `.bashrc` file as follows:
-
-```
-export PATH="$PATH:$JUNTO_DIR/bin"
-```
-
-Once you have taken care of these three things, you should be able to
-build and use the Junto Library.
+Once you have taken care of these three things, you should be able to build and use the Junto Library.
 
 ## Building the system from source
 
 Junto uses SBT (Simple Build Tool) with a standard directory structure.  To build Junto, go to JUNTO_DIR and type:
 
 ```
-$ bin/build update compile
+$ ./build update compile
 ```
 
 This will compile the source files and put them in ./target/classes. If this is your first time running it, you will see messages about Scala being dowloaded -- this is fine and expected. Once that is over, the Junto code will be compiled.
@@ -87,7 +71,7 @@ This will compile the source files and put them in ./target/classes. If this is 
 To try out other build targets, do:
 
 ```
-$ bin/build
+$ ./build
 ```
 
 This will drop you into the SBT interface.  Many [other build targets](https://github.com/harrah/xsbt/wiki/Getting-Started-Running) are supported.
@@ -100,17 +84,15 @@ If you've managed to configure and build the system, you should be  able to go t
 $ junto config simple_config
 ```
 
-Please look into the `examples/simple/simple_config` file for various options available. Sample (dummy) data is made available in the  examples/simple/data directory.
+Please look into the `examples/simple/simple_config` file for various options available. Sample (dummy) data is made available in the `examples/simple/data` directory.
 
-A more extensive example on prepositional phrase attachment is in `examples/ppa`. See the README in that directory for more details.
+A more extensive example on prepositional phrase attachment is in `src/test/scala/junto/prepattach.scala`. Look at that file for an example of using Junto as an API to construct a graph and run label propagation.
 
 ## Hadoop
 
 If you are interested in trying out the Hadoop implementations, then please look into `examples/hadoop/README`.
 
-
 ## Getting help
-
 
 Documentation is admittedly thin. If you get stuck, you can get help by posting questions to [the junto-open group](http://groups.google.com/group/junto-open). 
 
