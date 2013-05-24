@@ -1,10 +1,23 @@
+/**
+ * Copyright 2013 ScalaNLP
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package junto
-
 
 
 /**
  * An object that provides common functions needed for using Junto.
- *
  */
 object JuntoContext {
 
@@ -28,6 +41,9 @@ object JuntoContext {
     if (!normalize) noDummy else normalizeScores(noDummy)
   }
 
+  /**
+   * Get the vertices given their ids.
+   */
   def getVertices(graph: junto.graph.Graph, vertexIds: Seq[String]) =
     for (id <- vertexIds) yield graph.vertices.get(id)
 
@@ -40,7 +56,7 @@ object JuntoContext {
 
   /**
    * Get the top label for a given vertex. Return the default label otherwise. There
-   * should be an Option returning version of this.
+   * should be an Option  returning version of this.
    */ 
   def topLabel(vertex: Vertex, defaultLabel: String): String = {
     val labels = removeDummy(sortLabels(vertex.estimatedLabels))
@@ -80,6 +96,9 @@ object JuntoContext {
     (for (key <- labelMap.keys) yield (key.toString, labelMap.get(key))).sortBy(-_._2)
 
 
+  /**
+   * Take the DUMMY label out of a label distribution of a vertex.
+   */
   private def removeDummy(labels: Seq[(String,Double)], cutAtDummy: Boolean = false) = {
     val indexOfDummy = labels.indexWhere(_._1 == "__DUMMY__")
     if (cutAtDummy) labels.take(indexOfDummy)
@@ -89,6 +108,9 @@ object JuntoContext {
     }
   }
 
+  /**
+   * Normalize the scores associated with a vertex.
+   */
   private def normalizeScores(labels: Seq[(String,Double)]) = {
     val sum = labels.unzip._2.sum
     for ((label,score) <- labels) yield (label,score/sum)
