@@ -26,7 +26,7 @@ The latest stable release of Junto is 1.6.0. Here are the changes from version 1
 * Added some helpers for creating graphs with nodes of different types, e.g. junto.config.VertexName.
 * Now using Scallop for command-line parsing (instead of Argot).
 
-The development version is 1.7.0---some fairly big changes are coming.
+The development version is 1.6.1---some fairly big changes are coming.
 
 See the [CHANGELOG](https://github.com/scalanlp/junto/wiki/CHANGELOG) for changes in previous versions.
 
