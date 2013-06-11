@@ -130,7 +130,7 @@ class Vertex (val name: String) {
     injectedLabels.remove(label)
     isSeedNode = injectedLabels.size != 0
   }
-	
+  
   def GetEstimatedLabelScore (label: String) =
     if (estimatedLabels.containsKey(label)) estimatedLabels.get(label) else 0.0
 	

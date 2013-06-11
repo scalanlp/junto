@@ -142,18 +142,17 @@ with Logging {
 		
     AdsorptionHelper.prepareGraph(g)
 		
-    if (verbose)
-      logger.info(
-              "after_iteration " + 0 + 
-              " objective: " + getGraphObjective +
-              " precision: " + GraphEval.GetAccuracy(g) +
-              " rmse: " + GraphEval.GetRMSE(g) +
-              " mrr_train: " + GraphEval.GetAverageTrainMRR(g) +
-              " mrr_test: " + GraphEval.GetAverageTestMRR(g))
-
-    logger.info("Iteration:")
+    logger.debug(
+      "after_iteration " + 0 + 
+      " objective: " + getGraphObjective +
+      " precision: " + GraphEval.GetAccuracy(g) +
+      " rmse: " + GraphEval.GetRMSE(g) +
+      " mrr_train: " + GraphEval.GetAverageTrainMRR(g) +
+      " mrr_test: " + GraphEval.GetAverageTestMRR(g))
+    
+    val globalStartTime = System.currentTimeMillis
     for (iter <- 1 to maxIter) {
-      logger.info(" " + iter)
+      logger.debug(s"Iteration: $iter")
 			
       val startTime = System.currentTimeMillis
 
@@ -183,18 +182,18 @@ with Logging {
         }
 				
         if (verbose)
-          logger.info("Before norm: " + v.name + " " + ProbUtil.GetSum(vertexNewDist))
+          logger.debug("Before norm: " + v.name + " " + ProbUtil.GetSum(vertexNewDist))
 
         normalizeIfNecessary(vertexNewDist)
 								
         if (verbose) 
-          logger.info("After norm: " + v.name + " " + ProbUtil.GetSum(vertexNewDist))
+          logger.debug("After norm: " + v.name + " " + ProbUtil.GetSum(vertexNewDist))
 				
         // add injection probability
         ProbUtil.AddScores(vertexNewDist, v.pinject * mu1, v.injectedLabels)
 	
         if (verbose)
-          logger.info(iter + " after_inj " + v.name + " " +
+          logger.debug(iter + " after_inj " + v.name + " " +
                   ProbUtil.GetSum(vertexNewDist) + 
                   " " + CollectionUtil.Map2String(vertexNewDist) +
                   " mu1: " + mu1)
@@ -275,21 +274,23 @@ with Logging {
 
       resultList.add(res)
 
-      if (verbose)
-        logger.info(
-                "after_iteration " + iter +
-                " objective: " + getGraphObjective +
-                " accuracy: " + res(Constants.GetPrecisionString) +
-                " rmse: " + GraphEval.GetRMSE(g) +
-                " time: " + (endTime - startTime) +
-                " label_diff_per_node: " + deltaLabelDiffPerNode +
-                " mrr_train: " + GraphEval.GetAverageTrainMRR(g) +
-                " mrr_test: " + res(Constants.GetMRRString) +
-                " column_updates: " + totalColumnUpdates +
-                " entity_updates: " + totalEntityUpdates + "\n")
+      logger.debug(
+        "after_iteration " + iter +
+        " objective: " + getGraphObjective +
+        " accuracy: " + res(Constants.GetPrecisionString) +
+        " rmse: " + GraphEval.GetRMSE(g) +
+        " time: " + (endTime - startTime) +
+        " label_diff_per_node: " + deltaLabelDiffPerNode +
+        " mrr_train: " + GraphEval.GetAverageTrainMRR(g) +
+        " mrr_test: " + res(Constants.GetMRRString) +
+        " column_updates: " + totalColumnUpdates +
+        " entity_updates: " + totalEntityUpdates + "\n")
 			
     }
-    logger.info("")
+    logger.debug("")
+
+    val globalEndTime = System.currentTimeMillis
+    logger.debug("TIME: " + (globalEndTime-globalStartTime)/1000.0)
 		
   }
 	
