@@ -2,7 +2,7 @@ import AssemblyKeys._
 
 name := "junto"
 
-version := "1.6.1-SNAPSHOT"
+version := "1.6.1"
 
 organization := "org.scalanlp"
 

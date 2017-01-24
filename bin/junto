@@ -12,7 +12,7 @@ fi
 
 CP=$JUNTO_DIR/target/classes:$JARS:$JARS_MANAGED:$SCALA_LIB:$CLASSPATH
 
-if [ -z $JAVA_MEM_FLAG ] 
+if [ -z $JAVA_MEM_FLAG ]
 then
     JAVA_MEM_FLAG=-Xmx2g
 fi
@@ -25,7 +25,7 @@ shift
 help()
 {
 cat <<EOF
-Junto 1.5.x commands: 
+Junto 1.6.x commands: 
 
   config  	run Junto on the specified config file
   extract       extract distributions from Junto output
@@ -46,5 +46,3 @@ case $CMD in
 esac
 
 $JAVA_COMMAND $CLASS $*
-
-
