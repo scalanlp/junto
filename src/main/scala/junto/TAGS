@@ -1,47 +1,0 @@
-
-algorithm/Adsorption.scala,158
-extends Adsorption 22,696
-object MadHelper 38,1345
-extends Adsorption 76,2532
-object AdsorptionHelper 92,3066
-extends LabelPropagationAlgorithm(128,4283
-
-algorithm/LabelPropagationAlgorithm.scala,106
-import upenn.junto.graph.{Graph,Graph5,99
-abstract class LabelPropagationAlgorithm (graph: Graph)8,183
-
-algorithm/LpZgl.scala,132
-import java.util.{ArrayList,ArrayList10,225
-import java.util.{ArrayList,HashMap,10,225
-extends LabelPropagationAlgorithm(28,830
-
-app/Junto.scala,89
-import java.util.{ArrayList,ArrayList19,637
-object JuntoRunner extends Logging 30,979
-
-app/OutputExtractor.scala,47
-object OutputExtractor extends Logging 28,843
-
-config/GraphInfo.scala,265
-class Edge (val source: String, val target: String, val weight: Double) extends Serializable 19,622
-object EdgeFileReader 37,1129
-class Label (val vertex: String, val label: String, val score: Double) extends Serializable 48,1492
-object LabelFileReader 66,1998
-
-config/GraphLoader.scala,95
-import java.util.{ArrayList,ArrayList19,640
-object GraphConfigLoader extends Logging 26,858
-
-graph/ActorGraph.scala,33
-object TroveToScalaMap 258,8440
-
-graph/Graph.scala,124
-import java.util.{ArrayList,ArrayList5,116
-import java.util.{ArrayList,HashMap,5,116
-class Graph extends Logging 12,344
-
-graph/Vertex.scala,62
-object Vertex 17,415
-class Vertex (val name: String)52,1424
-
-test/Prepositions.scala,0
