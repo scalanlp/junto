@@ -10,25 +10,17 @@ This package provides an implementation of the Adsorption and  Modified Adsorpti
 
 Please cite Talukdar and Crammer (2009) and/or Talukdar and Pereira (2010) if you use this library.
 
-Additionally, LP_ZGL, one of the first label propagation algorithms is also implemented.
-
-* Xiaojin Zhu and Zoubin Ghahramani. Learning from labeled and unlabeled data with label propagation.  Technical Report CMU-CALD-02-107, Carnegie Mellon University, 2002.
-
 Why is the toolkit named Junto? The core code was written while Partha Talukdar was at the University of Pennsylvania, and Ben Franklin (the founder of the University) established [a club called Junto](http://en.wikipedia.org/wiki/Junto_(club)) that provided a structured forum for him and his friends to debate and exchange knowledge. This has a nice parallel with how label propagation works: nodes are connected and influence each other based on their connections. Also "junto" means "along" and "together" in a number of Latin languages, and carries the connotation of cooperation---also a good fit for label propagation.
 
 ## What's inside
 
-The latest stable release of Junto is 1.6.0. Here are the changes from version 1.5:
-
-* Changed `upenn.junto._` to `junto._`
-* Added junto.JuntoContext, which has functions for making it easier to interact with graphs and pull out results after running label propagation.
-* Added prepositional phrase attachment test.
-* Added some helpers for creating graphs with nodes of different types, e.g. junto.config.VertexName.
-* Now using Scallop for command-line parsing (instead of Argot).
+The latest stable release of Junto is 1.6.0. The current version is a drastically simplified code base that is pure Scala and has few dependencies. It is currently undergoing substantially changes while we work toward a 2.0 version.
 
 See the [CHANGELOG](https://github.com/scalanlp/junto/wiki/CHANGELOG) for changes in previous versions.
 
 ## Using Junto
+
+**NOTE**: This is for a different version and very different API than the code that is in the repository at present.
 
 In SBT:
 
@@ -45,7 +37,7 @@ In Maven:
 
 ## Requirements
 
-* Version 1.6 of the Java 2 SDK (http://java.sun.com)
+* Version 1.7 of the Java 2 SDK (http://java.sun.com)
 
 
 ## Configuring your environment variables
@@ -58,10 +50,10 @@ Once you have taken care of these three things, you should be able to build and 
 
 ## Building the system from source
 
-Junto uses SBT (Simple Build Tool) with a standard directory structure.  To build Junto, go to JUNTO_DIR and type:
+Junto uses SBT (Simple Build Tool) with a standard directory structure.  To build Junto, install `sbt` and go to JUNTO_DIR and type:
 
 ```
-$ ./build update compile
+$ sbt compile
 ```
 
 This will compile the source files and put them in ./target/classes. If this is your first time running it, you will see messages about Scala being dowloaded -- this is fine and expected. Once that is over, the Junto code will be compiled.
@@ -69,12 +61,15 @@ This will compile the source files and put them in ./target/classes. If this is 
 To try out other build targets, do:
 
 ```
-$ ./build
+$ sbt
 ```
 
 This will drop you into the SBT interface.  Many [other build targets](https://github.com/harrah/xsbt/wiki/Getting-Started-Running) are supported.
 
 ## Trying it out
+
+
+**NOTE**: This example is currently broken.
 
 If you've managed to configure and build the system, you should be  able to go to $JUNTO_DIR/examples/simple and run:
 
@@ -86,12 +81,8 @@ Please look into the `examples/simple/simple_config` file for various options av
 
 A more extensive example on prepositional phrase attachment is in `src/test/scala/junto/prepattach.scala`. Look at that file for an example of using Junto as an API to construct a graph and run label propagation.
 
-## Hadoop
-
-If you are interested in trying out the Hadoop implementations, then please look into `examples/hadoop/README`.
-
 ## Getting help
 
-Documentation is admittedly thin. If you get stuck, you can get help by posting questions to [the junto-open group](http://groups.google.com/group/junto-open). 
+Documentation is admittedly thin. If you get stuck, you can get help by posting questions to [the junto-open group](http://groups.google.com/group/junto-open).
 
 Also, if you find what you believe is a bug or have a feature request, you can create [an issue](https://github.com/scalanlp/junto/issues).
