@@ -12,6 +12,6 @@ crossScalaVersions := Seq("2.10.6", "2.11.7")
 
 libraryDependencies ++= Seq(
   "com.assembla.scala-incubator" %% "graph-core" % "1.8.1",
-  "org.rogach" %% "scallop" % "0.9.4",
+  "org.rogach" %% "scallop" % "2.0.6",
   "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test"
 )
