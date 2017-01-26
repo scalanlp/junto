@@ -22,20 +22,19 @@ import java.io._
 import junto._
 import collection.JavaConversions._
 
-
 /**
  * Test Junto on the prepositional phrase attachment data.
  */
 class PrepAttachSpec extends FunSpec {
 
   describe("Prepositional Phrase Attachment") {
-    it ("should construct the graph, propagate labels, and evaluate") {
+    it("should construct the graph, propagate labels, and evaluate") {
 
       // Convert files to PrepInfo lists
       val ppadir = "/data/ppa"
-      val trainInfo = getInfo(ppadir+"/training")
-      val devInfo = getInfo(ppadir+"/devset", trainInfo.length)
-      val testInfo = getInfo(ppadir+"/test", trainInfo.length+devInfo.length)
+      val trainInfo = getInfo(ppadir + "/training")
+      val devInfo = getInfo(ppadir + "/devset", trainInfo.length)
+      val testInfo = getInfo(ppadir + "/test", trainInfo.length + devInfo.length)
 
       // Create the edges and seeds
       val edges = createEdges(trainInfo) ++ createEdges(devInfo) ++ createEdges(testInfo)
@@ -43,7 +42,7 @@ class PrepAttachSpec extends FunSpec {
       val eval = createLabels(devInfo)
 
       // Create the graph and run label propagation
-      val (nodeNames, labelNames, estimatedLabels) = AdsorptionRunner(edges,seeds)
+      val (nodeNames, labelNames, estimatedLabels) = AdsorptionRunner(edges, seeds)
 
       //val (acc, mrr) = score(eval, graph, "V")
 
@@ -53,16 +52,16 @@ class PrepAttachSpec extends FunSpec {
 
   }
 
-  def createEdges (info: Seq[PrepInfo]): Seq[Edge[String]] = {
-    (for (item <- info) yield
-      Seq(Edge(item.idNode, item.verbNode),
-          Edge(item.idNode, item.nounNode),
-          Edge(item.idNode, item.prepNode),
-          Edge(item.idNode, item.pobjNode))
-     ).flatten
+  def createEdges(info: Seq[PrepInfo]): Seq[Edge[String]] = {
+    (for (item <- info) yield Seq(
+      Edge(item.idNode, item.verbNode),
+      Edge(item.idNode, item.nounNode),
+      Edge(item.idNode, item.prepNode),
+      Edge(item.idNode, item.pobjNode)
+    )).flatten
   }
 
-  def createLabels (info: Seq[PrepInfo]): Seq[LabelSpec] =
+  def createLabels(info: Seq[PrepInfo]): Seq[LabelSpec] =
     info.map(item => LabelSpec(item.idNode, item.label))
 
   def getInfo(inputFile: String, startIndex: Int = 0) = {
@@ -71,26 +70,26 @@ class PrepAttachSpec extends FunSpec {
       .getLines
       .toList
 
-    for ((line, id) <- info.zip(Stream.from(startIndex))) yield
-      PrepInfoFromLine(id, line)
+    for ((line, id) <- info.zip(Stream.from(startIndex))) yield PrepInfoFromLine(id, line)
   }
 
 }
 
-case class PrepInfo (
-  id: String, verb: String, noun: String, prep: String, pobj: String, label: String) {
+case class PrepInfo(
+    id: String, verb: String, noun: String, prep: String, pobj: String, label: String
+) {
 
   // Helpers for creating nodes of different types.
-  lazy val idNode = VertexName(id,"ID").toString
-  lazy val verbNode = VertexName(verb,"VERB").toString
-  lazy val nounNode = VertexName(noun,"NOUN").toString
-  lazy val prepNode = VertexName(prep,"PREP").toString
-  lazy val pobjNode = VertexName(pobj,"POBJ").toString
+  lazy val idNode = VertexName(id, "ID").toString
+  lazy val verbNode = VertexName(verb, "VERB").toString
+  lazy val nounNode = VertexName(noun, "NOUN").toString
+  lazy val prepNode = VertexName(prep, "PREP").toString
+  lazy val pobjNode = VertexName(pobj, "POBJ").toString
 
 }
 
-object PrepInfoFromLine extends ((Int,String) => PrepInfo) {
-  def apply (id: Int, line: String) = {
+object PrepInfoFromLine extends ((Int, String) => PrepInfo) {
+  def apply(id: Int, line: String) = {
     val Array(sentenceId, verb, noun, prep, pobj, label) = line.split(" ")
     PrepInfo(id.toString, verb, noun, prep, pobj, label)
   }
