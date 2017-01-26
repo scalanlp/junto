@@ -1,12 +1,12 @@
 /**
  * Copyright 2013 ScalaNLP
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,18 +16,16 @@
 package junto
 
 import org.scalatest.FunSpec
-import io.Source
 
 import java.io._
-import junto.JuntoContext._
-import junto.app._
-import junto.config._
+
+import junto._
 import collection.JavaConversions._
 
 
 /**
  * Test Junto on the prepositional phrase attachment data.
- */ 
+ */
 class PrepAttachSpec extends FunSpec {
 
   describe("Prepositional Phrase Attachment") {
@@ -45,18 +43,17 @@ class PrepAttachSpec extends FunSpec {
       val eval = createLabels(devInfo)
 
       // Create the graph and run label propagation
-      val graph = GraphBuilder(edges, seeds, eval)
-      JuntoRunner(graph)
-      
-      val (acc, mrr) = score(eval, graph, "V")
+      val (nodeNames, labelNames, estimatedLabels) = AdsorptionRunner(edges,seeds)
 
-      println("Accuracy: " + acc)
-      println("MRR: " + mrr)
+      //val (acc, mrr) = score(eval, graph, "V")
+
+      //println("Accuracy: " + acc)
+      //println("MRR: " + mrr)
     }
 
   }
 
-  def createEdges (info: Seq[PrepInfo]): Seq[Edge] = {
+  def createEdges (info: Seq[PrepInfo]): Seq[Edge[String]] = {
     (for (item <- info) yield
       Seq(Edge(item.idNode, item.verbNode),
           Edge(item.idNode, item.nounNode),
@@ -65,19 +62,19 @@ class PrepAttachSpec extends FunSpec {
      ).flatten
   }
 
-  def createLabels (info: Seq[PrepInfo]): Seq[Label] =
-    info.map(item => Label(item.idNode, item.label))
+  def createLabels (info: Seq[PrepInfo]): Seq[LabelSpec] =
+    info.map(item => LabelSpec(item.idNode, item.label))
 
   def getInfo(inputFile: String, startIndex: Int = 0) = {
-    val info = io.Source
+    val info = scala.io.Source
       .fromInputStream(this.getClass.getResourceAsStream(inputFile))
       .getLines
       .toList
 
-    for ((line, id) <- info.zip(Stream.from(startIndex))) yield 
+    for ((line, id) <- info.zip(Stream.from(startIndex))) yield
       PrepInfoFromLine(id, line)
   }
-  
+
 }
 
 case class PrepInfo (
@@ -98,4 +95,3 @@ object PrepInfoFromLine extends ((Int,String) => PrepInfo) {
     PrepInfo(id.toString, verb, noun, prep, pobj, label)
   }
 }
-
