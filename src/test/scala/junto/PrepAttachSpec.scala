@@ -21,6 +21,7 @@ import java.io._
 
 import junto._
 import junto.graph._
+import junto.util.Evaluator
 import collection.JavaConversions._
 
 /**
@@ -50,7 +51,7 @@ class PrepAttachSpec extends FunSpec {
       } yield (nodeName -> label)).toMap
 
       // Create the graph and run label propagation
-      val (nodeNames, labelNames, estimatedLabels) = AdsorptionRunner(edges, seeds)
+      val (nodeNames, labelNames, estimatedLabels) = Junto(edges, seeds)
 
       val (accuracy, meanReciprocalRank) =
         Evaluator.score(nodeNames, labelNames, estimatedLabels,

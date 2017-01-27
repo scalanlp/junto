@@ -1,6 +1,7 @@
-package junto
+package junto.util
 
 import scala.collection.mutable.ListBuffer
+import junto.DUMMY_LABEL
 
 object Evaluator {
 

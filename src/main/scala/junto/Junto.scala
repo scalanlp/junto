@@ -7,11 +7,11 @@ import junto.graph._
 /**
  * Given the edge and seed descriptions, create the graph and run modified adsorption.
  */
-object AdsorptionRunner {
+object Junto {
 
   def main(args: Array[String]) {
 
-    val conf = new AdsorptionCommand(args)
+    val conf = new JuntoOptions(args)
 
     val inputDir = new File(conf.inputDir())
     val prefix = conf.prefix()

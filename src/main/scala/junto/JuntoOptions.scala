@@ -2,7 +2,7 @@ package junto
 
 import org.rogach.scallop._
 
-class AdsorptionCommand(arguments: Seq[String]) extends ScallopConf(arguments) {
+class JuntoOptions(arguments: Seq[String]) extends ScallopConf(arguments) {
 
   // The name of the directory containing input graph files.
   lazy val inputDir = opt[String]()
