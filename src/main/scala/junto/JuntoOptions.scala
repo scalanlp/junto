@@ -13,6 +13,12 @@ class JuntoOptions(arguments: Seq[String]) extends ScallopConf(arguments) {
   // The name of the file to save output to.
   lazy val outputFile = opt[String]()
 
+  lazy val seedLabelFile = opt[String]()
+  lazy val evalLabelFile = opt[String]()
+  lazy val edgeFile = opt[String]()
+
+  lazy val tabSeparated = opt[Boolean](default = Some(false))
+
   // How many iterations to run.
   lazy val iterations = opt[Int](default = Some(20))
 

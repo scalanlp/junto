@@ -1,5 +1,8 @@
 package junto
 
+import java.io.File
+import junto.io.getSource
+
 import scalax.collection.Graph
 import scalax.collection.GraphPredef._
 import scalax.collection.GraphEdge._
@@ -26,5 +29,29 @@ package object graph {
 
   protected[junto] def otherNode(edge: RWUnDiEdge[Int], node: Int) =
     if (edge._1 == node) edge._2 else edge._1
+
+  def getEdges(inputFile: String, separator: Char = ','): Iterator[Edge[String]] = {
+    for {
+      line <- getSource(inputFile).getLines
+      items = line.split(separator)
+    } yield {
+      val source = items(0)
+      val target = items(1)
+      val weight = if (items.length == 2) 1.0 else items(2).toDouble
+      Edge(source, target, weight)
+    }
+  }
+
+  def getLabels(inputFile: String, separator: Char = ','): Iterator[LabelSpec] = {
+    for {
+      line <- getSource(inputFile).getLines
+      items = line.split(separator)
+    } yield {
+      val source = items(0)
+      val target = items(1)
+      val weight = if (items.length == 2) 1.0 else items(2).toDouble
+      LabelSpec(source, target, weight)
+    }
+  }
 
 }
