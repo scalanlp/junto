@@ -23,9 +23,14 @@ import junto._
 import collection.JavaConversions._
 
 /**
- * Test Junto on the prepositional phrase attachment data.
+ * Test Junto on the Prepositional Phrase Attachment Dataset from:
+ *
+ * Ratnaparkhi, Reynar, & Roukos. "A Maximum Entropy Model for Prepositional
+ *   "Phrase Attachment". ARPA HLT 1994.
  */
 class PrepAttachSpec extends FunSpec {
+
+  import PrepAttachSpec._
 
   describe("Prepositional Phrase Attachment") {
     it("should construct the graph, propagate labels, and evaluate") {
@@ -39,19 +44,28 @@ class PrepAttachSpec extends FunSpec {
       // Create the edges and seeds
       val edges = createEdges(trainInfo) ++ createEdges(devInfo) ++ createEdges(testInfo)
       val seeds = createLabels(trainInfo)
-      val eval = createLabels(devInfo)
+      val devLabels = (for {
+        LabelSpec(nodeName, label, strength) <- createLabels(devInfo)
+      } yield (nodeName -> label)).toMap
 
       // Create the graph and run label propagation
       val (nodeNames, labelNames, estimatedLabels) = AdsorptionRunner(edges, seeds)
 
-      //val (acc, mrr) = score(eval, graph, "V")
+      val (accuracy, meanReciprocalRank) =
+        Evaluator.score(nodeNames, labelNames, estimatedLabels,
+          "V", devLabels)
 
-      //println("Accuracy: " + acc)
-      //println("MRR: " + mrr)
+      //println("Accuracy: " + accuracy)
+      //println("MRR: " + meanReciprocalRank)
+
+      assert(math.round(accuracy * 1000) == 782)
+      assert(math.round(meanReciprocalRank * 1000) == 897)
     }
 
   }
 
+  // Edges connect the instance nodes to their feature nodes (e.g.,
+  // "VERB::bought").
   def createEdges(info: Seq[PrepInfo]): Seq[Edge[String]] = {
     (for (item <- info) yield Seq(
       Edge(item.idNode, item.verbNode),
@@ -61,36 +75,46 @@ class PrepAttachSpec extends FunSpec {
     )).flatten
   }
 
+  // Pull out label information for each instance node.
   def createLabels(info: Seq[PrepInfo]): Seq[LabelSpec] =
     info.map(item => LabelSpec(item.idNode, item.label))
 
+  // Read the info for each instance and create a PrepInfo object.
   def getInfo(inputFile: String, startIndex: Int = 0) = {
-    val info = scala.io.Source
-      .fromInputStream(this.getClass.getResourceAsStream(inputFile))
-      .getLines
-      .toList
+    val prepAttachStream = this.getClass.getResourceAsStream(inputFile)
+    val info =
+      scala.io.Source.fromInputStream(prepAttachStream).getLines.toList
 
-    for ((line, id) <- info.zip(Stream.from(startIndex))) yield PrepInfoFromLine(id, line)
+    for {
+      (line, id) <- info.zip(Stream.from(startIndex))
+    } yield PrepInfoFromLine(id, line)
+
   }
 
 }
 
-case class PrepInfo(
-    id: String, verb: String, noun: String, prep: String, pobj: String, label: String
-) {
+object PrepAttachSpec {
 
-  // Helpers for creating nodes of different types.
-  lazy val idNode = VertexName(id, "ID").toString
-  lazy val verbNode = VertexName(verb, "VERB").toString
-  lazy val nounNode = VertexName(noun, "NOUN").toString
-  lazy val prepNode = VertexName(prep, "PREP").toString
-  lazy val pobjNode = VertexName(pobj, "POBJ").toString
+  // A case class to store everything for an instance.
+  case class PrepInfo(
+      id: String, verb: String, noun: String, prep: String, pobj: String, label: String
+  ) {
 
-}
+    // Helpers for creating nodes of different types.
+    lazy val idNode = VertexName(id, "ID").toString
+    lazy val verbNode = VertexName(verb, "VERB").toString
+    lazy val nounNode = VertexName(noun, "NOUN").toString
+    lazy val prepNode = VertexName(prep, "PREP").toString
+    lazy val pobjNode = VertexName(pobj, "POBJ").toString
 
-object PrepInfoFromLine extends ((Int, String) => PrepInfo) {
-  def apply(id: Int, line: String) = {
-    val Array(sentenceId, verb, noun, prep, pobj, label) = line.split(" ")
-    PrepInfo(id.toString, verb, noun, prep, pobj, label)
   }
+
+  // Read a PrepInfo object from a line.
+  object PrepInfoFromLine extends ((Int, String) => PrepInfo) {
+    def apply(id: Int, line: String) = {
+      val Array(sentenceId, verb, noun, prep, pobj, label) = line.split(" ")
+      PrepInfo(id.toString, verb, noun, prep, pobj, label)
+    }
+  }
+
 }
