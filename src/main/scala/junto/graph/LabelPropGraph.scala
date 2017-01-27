@@ -1,4 +1,4 @@
-package junto
+package junto.graph
 
 import scalax.collection.Graph
 import scalax.collection.GraphPredef._
@@ -16,6 +16,7 @@ class LabelPropGraph(
 
 object LabelPropGraph {
 
+  import junto.DUMMY_LABEL
   import junto.util.GrowableIndex
 
   // Create a graph

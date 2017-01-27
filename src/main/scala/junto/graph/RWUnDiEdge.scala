@@ -1,4 +1,4 @@
-package junto
+package junto.graph
 
 import scalax.collection.GraphPredef._
 import scalax.collection.GraphEdge._

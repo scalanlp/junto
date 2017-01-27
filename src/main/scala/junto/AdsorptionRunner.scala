@@ -2,6 +2,7 @@ package junto
 
 import java.io._
 import junto.io._
+import junto.graph._
 
 /**
  * Given the edge and seed descriptions, create the graph and run modified adsorption.

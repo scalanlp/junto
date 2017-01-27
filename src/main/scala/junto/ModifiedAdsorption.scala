@@ -1,5 +1,7 @@
 package junto
 
+import junto.graph._
+
 /**
  * A class that takes all the information needed to run the modified adsorption
  * algorithm and provides an apply method that actually runs it and returns the

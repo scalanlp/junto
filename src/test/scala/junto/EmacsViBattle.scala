@@ -17,10 +17,8 @@ package junto
 
 import org.scalatest.FunSpec
 
-import java.io._
-
 import junto._
-import collection.JavaConversions._
+import junto.graph._
 
 /**
  * Test Junto on a small network battling for Emacs vs VI supremacy!

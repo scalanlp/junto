@@ -20,6 +20,7 @@ import org.scalatest.FunSpec
 import java.io._
 
 import junto._
+import junto.graph._
 import collection.JavaConversions._
 
 /**
