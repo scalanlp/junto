@@ -28,4 +28,5 @@ class AdsorptionCommand(arguments: Seq[String]) extends ScallopConf(arguments) {
   // Dummy label weight (penalize high-degree nodes)
   lazy val mu3 = opt[Double](default = Some(1.0))
 
+  verify()
 }

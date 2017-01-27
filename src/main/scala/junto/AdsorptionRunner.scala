@@ -11,7 +11,6 @@ object AdsorptionRunner {
   def main(args: Array[String]) {
 
     val conf = new AdsorptionCommand(args)
-    conf.afterInit
 
     val inputDir = new File(conf.inputDir())
     val prefix = conf.prefix()
