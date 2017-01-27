@@ -64,7 +64,8 @@ class EmacsViBattle extends FunSpec {
     it("should propagate labels and check predicted labels and scores") {
 
       // Run label propagation.
-      val (nodeNames, labelNames, estimatedLabels) = Junto(edges, seeds)
+      val graph = LabelPropGraph(edges, seeds)
+      val (nodeNames, labelNames, estimatedLabels) = Junto(graph)
 
       // Associate the nodes with their max scoring labels.
       val nodesToLabels = (for {

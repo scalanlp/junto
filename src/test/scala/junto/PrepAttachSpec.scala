@@ -51,11 +51,11 @@ class PrepAttachSpec extends FunSpec {
       } yield (nodeName -> label)).toMap
 
       // Create the graph and run label propagation
-      val (nodeNames, labelNames, estimatedLabels) = Junto(edges, seeds)
+      val graph = LabelPropGraph(edges, seeds)
+      val (nodeNames, labelNames, estimatedLabels) = Junto(graph)
 
       val (accuracy, meanReciprocalRank) =
-        Evaluator.score(nodeNames, labelNames, estimatedLabels,
-          "V", devLabels)
+        Evaluator.score(nodeNames, labelNames, estimatedLabels, "V", devLabels)
 
       //println("Accuracy: " + accuracy)
       //println("MRR: " + meanReciprocalRank)
