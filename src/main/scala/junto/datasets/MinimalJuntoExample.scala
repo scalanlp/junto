@@ -11,14 +11,10 @@ object MinimalJuntoExample {
 
     val conf = new JuntoOptions(args)
 
-    val inputDir = new File(conf.inputDir())
-
-    val seedLabelFile = new File(conf.seedLabelFile())
-    val evalLabelFile = new File(conf.evalLabelFile())
-
-    val edges = getEdges(conf.edgeFile())
-    val seeds = getLabels(conf.seedLabelFile())
-    val evalLabels = getLabels(conf.seedLabelFile())
+    val separator = if (conf.tabSeparated()) '\t' else ','
+    val edges = getEdges(conf.edgeFile(), separator)
+    val seeds = getLabels(conf.seedLabelFile(), separator)
+    val evalLabels = getLabels(conf.seedLabelFile(), separator)
 
     val parameters = AdsorptionParameters(conf.mu1(), conf.mu2(), conf.mu3())
     val beta = 2.0

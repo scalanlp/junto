@@ -13,8 +13,9 @@ object Junto {
 
     val conf = new JuntoOptions(args)
 
-    val inputDir = new File(conf.inputDir())
-    val prefix = conf.prefix()
+    // Need to fix these.
+    val inputDir = "."
+    val prefix = "example"
 
     val labelNameFile = new File(inputDir, s"$prefix-labels.csv.gz")
     val nodeFile = new File(inputDir, s"$prefix-nodes.csv.gz")

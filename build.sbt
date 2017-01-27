@@ -15,3 +15,7 @@ libraryDependencies ++= Seq(
   "org.rogach" %% "scallop" % "2.0.6",
   "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test"
 )
+
+enablePlugins(JavaAppPackaging)
+
+mainClass in Compile := Some("junto.Junto")

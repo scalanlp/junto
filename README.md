@@ -39,16 +39,9 @@ In Maven:
 
 * Version 1.7 of the Java 2 SDK (http://java.sun.com)
 
-
-## Configuring your environment variables
-
-The easiest thing to do is to set the environment variables JAVA_HOME and JUNTO_DIR to the relevant locations on your system. Set JAVA_HOME to match the top level directory containing the Java installation you want to use.
-
-Next, likewise set JUNTO_DIR to be the top level directory where you unzipped the download and then add the directory `JUNTO_DIR/bin` to your path.
-
-Once you have taken care of these three things, you should be able to build and use the Junto Library.
-
 ## Building the system from source
+
+First, set JAVA_HOME to match the top level directory containing the Java installation you want to use.  Junto Library using `sbt`.
 
 Junto uses SBT (Simple Build Tool) with a standard directory structure.  To build Junto, install `sbt` and go to JUNTO_DIR and type:
 
@@ -65,6 +58,22 @@ $ sbt
 ```
 
 This will drop you into the SBT interface.  Many [other build targets](https://github.com/harrah/xsbt/wiki/Getting-Started-Running) are supported.
+
+For command line use, compile the package using `sbt stage` and add the following to your `.bash_profile`:
+
+```
+export JUNTO_DIR=<your-path-to-junto>
+export PATH=$PATH:JUNTO_DIR/target/universal/stage/bin/
+```
+
+(Adapt as necessary for other shells.)
+
+You can then run the main Junto app:
+
+```
+junto --help
+```
+
 
 ## Trying it out
 
