@@ -63,7 +63,7 @@ For command line use, compile the package using `sbt stage` and add the followin
 
 ```
 export JUNTO_DIR=<your-path-to-junto>
-export PATH=$PATH:JUNTO_DIR/target/universal/stage/bin/
+export PATH=$PATH:$JUNTO_DIR/target/universal/stage/bin/
 ```
 
 (Adapt as necessary for other shells.)
@@ -74,21 +74,37 @@ You can then run the main Junto app:
 junto --help
 ```
 
-
 ## Trying it out
 
-
-**NOTE**: This example is currently broken.
-
-If you've managed to configure and build the system, you should be  able to go to $JUNTO_DIR/examples/simple and run:
+If you've managed to configure and build the system, you should be able to go to $JUNTO_DIR/examples/minimal and run the following command and get the same output:
 
 ```
-$ junto config simple_config
+$ junto --tab-separated --edge-file edges.minimal.tsv --seed-label-file seed_labels.minimal.tsv --eval-label-file test_labels.minimal.tsv --output-file output_predictions.minimal.csv  --mu1 1.0 --mu2 .01 --mu3 .01
+Number of nodes: 4
+Number of edges: 5
+1: delta:0.15833908915683234 obj:0.08013428514645574
+2: delta:0.04759638215742747 obj:0.07677391666501679
+3: delta:0.01850404042378978 obj:0.0761157867035102
+4: delta:0.0072043634149645125 obj:0.07579866440446062
+5: delta:0.0028034124542580387 obj:0.07571427318621111
+6: delta:0.0010914904258965965 obj:0.07566963785749868
+7: delta:4.2476484252594213E-4 obj:0.07565703078738015
+8: delta:1.653845297211106E-4 obj:0.07565041388419924
+9: delta:6.436571964520653E-5 obj:0.07564848037536726
+10: delta:2.506173650420982E-5 obj:0.0756474905058922
+11: delta:9.754328923841513E-6 obj:0.0756471932173569
+TIME: 0.039
+Accuracy: 1.0
+MRR: 1.0
 ```
 
-Please look into the `examples/simple/simple_config` file for various options available. Sample (dummy) data is made available in the `examples/simple/data` directory.
+Check that the output predictions are the same by doing a diff against the reference output.
 
-A more extensive example on prepositional phrase attachment is in `src/test/scala/junto/prepattach.scala`. Look at that file for an example of using Junto as an API to construct a graph and run label propagation.
+```
+$ diff reference.output_predictions.minimal.csv output_predictions.minimal.csv
+```
+
+A more extensive example on prepositional phrase attachment is in `src/test/scala/junto/PrepAttachSpech.scala`. Look at that file for an example of using Junto as an API to construct a graph and run label propagation.
 
 ## Getting help
 

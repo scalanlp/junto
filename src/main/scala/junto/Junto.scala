@@ -3,6 +3,7 @@ package junto
 import java.io._
 import junto.io._
 import junto.graph._
+import junto.util.Evaluator
 
 /**
  * Given the edge and seed descriptions, create the graph and run modified adsorption.
@@ -13,62 +14,57 @@ object Junto {
 
     val conf = new JuntoOptions(args)
 
-    // Need to fix these.
-    val inputDir = "."
-    val prefix = "example"
-
-    val labelNameFile = new File(inputDir, s"$prefix-labels.csv.gz")
-    val nodeFile = new File(inputDir, s"$prefix-nodes.csv.gz")
-    val edgeFile = new File(inputDir, s"$prefix-edges.csv.gz")
-
-    val labelNames = getSource(labelNameFile).getLines.toSeq
-
-    val nodeInfo = collection.mutable.ListBuffer.empty[(Int, String)]
-    val seedSpecs = collection.mutable.ListBuffer.empty[LabeledNode[Int]]
-    for {
-      line <- getSource(nodeFile).getLines
-      idString :: name :: nodetype :: weights = line.split(",").toList
-      id = idString.toInt
-    } {
-      nodeInfo += ((id, name))
-      seedSpecs += LabeledNode(id, weights.map(_.toDouble))
-    }
-
-    val nodeNames = nodeInfo.toSeq.sortBy(_._1).unzip._2
-
-    val edgeSpecs = (for {
-      line <- getSource(edgeFile).getLines
-      Array(source, target, weight) = line.split(",")
-    } yield Edge(source.toInt, target.toInt, weight.toDouble)).toSeq
-
-    val lpgraph = LabelPropGraph.fromIndexed(
-      labelNames, nodeNames, edgeSpecs, seedSpecs.toSeq
-    )
+    val separator = if (conf.tabSeparated()) '\t' else ','
+    val edges = getEdges(conf.edgeFile(), separator)
+    val seeds = getLabels(conf.seedLabelFile(), separator)
 
     val parameters = AdsorptionParameters(conf.mu1(), conf.mu2(), conf.mu3())
     val beta = 2.0
     val numIterations = conf.iterations()
-    val estimatedLabels = ModifiedAdsorption(lpgraph, parameters, beta)(numIterations)
 
-    val out = createWriter(conf.outputFile())
+    val graph = LabelPropGraph(edges, seeds, false)
 
-    out.write("id," + lpgraph.labelNames.mkString(",") + "\n")
-    for ((name, distribution) <- lpgraph.nodeNames.zip(estimatedLabels))
-      out.write(name + "," + distribution.mkString(",") + "\n")
-    out.close
+    val (nodeNames, labelNames, estimatedLabels) =
+      Junto(graph, parameters, numIterations, beta)
+
+    conf.evalLabelFile.get match {
+
+      case Some(evalLabelFile) =>
+        val evalLabelSequence = getLabels(evalLabelFile, separator)
+
+        val evalLabels = (for {
+          LabelSpec(nodeName, label, strength) <- evalLabelSequence
+        } yield (nodeName -> label)).toMap
+
+        val (accuracy, meanReciprocalRank) =
+          Evaluator.score(nodeNames, labelNames, estimatedLabels, "L1", evalLabels)
+
+        println("Accuracy: " + accuracy)
+        println("MRR: " + meanReciprocalRank)
+    }
+
+    // Output predictions if an output file is specified.
+    conf.outputFile.get match {
+      case Some(outputFile) =>
+
+        val out = createWriter(outputFile)
+
+        out.write("id," + graph.labelNames.mkString(",") + "\n")
+        for ((name, distribution) <- graph.nodeNames.zip(estimatedLabels))
+          out.write(name + "," + distribution.mkString(",") + "\n")
+        out.close
+    }
   }
 
   def apply(
-    edges: TraversableOnce[Edge[String]],
-    seedSpecs: TraversableOnce[LabelSpec],
+    graph: LabelPropGraph,
     parameters: AdsorptionParameters = AdsorptionParameters(),
     numIterations: Int = 10,
     beta: Double = 2.0,
     isDirected: Boolean = false
   ) = {
-    val lpgraph = LabelPropGraph(edges, seedSpecs, isDirected)
-    val estimatedLabels = ModifiedAdsorption(lpgraph, parameters, beta)(numIterations)
-    (lpgraph.nodeNames, lpgraph.labelNames, estimatedLabels)
+    val estimatedLabels = ModifiedAdsorption(graph, parameters, beta)(numIterations)
+    (graph.nodeNames, graph.labelNames, estimatedLabels)
   }
 
 }
