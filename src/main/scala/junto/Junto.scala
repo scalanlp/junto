@@ -1,6 +1,5 @@
 package junto
 
-import java.io._
 import junto.io._
 import junto.graph._
 import junto.util.Evaluator
