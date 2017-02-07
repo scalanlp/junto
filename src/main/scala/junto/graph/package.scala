@@ -1,10 +1,7 @@
 package junto
 
-import java.io.File
 import junto.io.getSource
 
-import scalax.collection.Graph
-import scalax.collection.GraphPredef._
 import scalax.collection.GraphEdge._
 
 package object graph {

@@ -1,7 +1,5 @@
 package junto.util
 
-import scala.collection.mutable
-
 class GrowableIndex[T] extends (T => Int) {
 
   import collection.mutable
