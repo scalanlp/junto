@@ -40,8 +40,11 @@ package object graph {
   }
 
   def getLabels(inputFile: String, separator: Char = ','): Iterator[LabelSpec] = {
+    val lines = getSource(inputFile).getLines
+    val header = lines.next()
+    // skip the header for now (perhaps use it later to identify labels with probabilities)
     for {
-      line <- getSource(inputFile).getLines
+      line <- lines
       items = line.split(separator)
     } yield {
       val source = items(0)
