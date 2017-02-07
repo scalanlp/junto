@@ -26,9 +26,9 @@ object Junto {
     val (nodeNames, labelNames, estimatedLabels) =
       Junto(graph, parameters, numIterations, beta)
 
-    conf.evalLabelFile.get match {
+    conf.evalLabelFile.toOption match {
 
-      case Some(evalLabelFile) =>
+      case Some(evalLabelFile) => {
         val evalLabelSequence = getLabels(evalLabelFile, separator)
 
         val evalLabels = (for {
@@ -40,10 +40,12 @@ object Junto {
 
         println("Accuracy: " + accuracy)
         println("MRR: " + meanReciprocalRank)
+      }
+      case None => ; // ignore evaluation when evalLabelFile is not specified
     }
 
     // Output predictions if an output file is specified.
-    conf.outputFile.get match {
+    conf.outputFile.toOption match {
       case Some(outputFile) =>
 
         val out = createWriter(outputFile)
