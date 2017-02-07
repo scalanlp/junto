@@ -39,10 +39,13 @@ package object graph {
     }
   }
 
-  def getLabels(inputFile: String, separator: Char = ',', skipHeader: Boolean = false): Iterator[LabelSpec] = {
+  def getLabels(inputFile: String, separator: Char = ',', isEvalOrPredFile: Boolean = false): Iterator[LabelSpec] = {
     val lines = getSource(inputFile).getLines
 
-    val header = if (skipHeader) lines.next() else None
+    //TODO
+    // 1. Parse header
+    // 2. read distribution 
+    val header = if (isEvalOrPredFile) lines.next() else None
     // skip the header in eval files for now (perhaps use it later to identify labels with probabilities)
     for {
       line <- lines
