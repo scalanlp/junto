@@ -2,7 +2,6 @@ package junto.graph
 
 import scalax.collection.Graph
 import scalax.collection.GraphPredef._
-import scalax.collection.GraphEdge._
 
 class LabelPropGraph(
     val graph: Graph[Int, RWUnDiEdge],

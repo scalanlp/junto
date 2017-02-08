@@ -1,6 +1,5 @@
 package junto
 
-import java.io._
 import junto.io._
 import junto.graph._
 import junto.util.Evaluator
@@ -27,10 +26,10 @@ object Junto {
     val (nodeNames, labelNames, estimatedLabels) =
       Junto(graph, parameters, numIterations, beta)
 
-    conf.evalLabelFile.get match {
+    conf.evalLabelFile.toOption match {
 
-      case Some(evalLabelFile) =>
-        val evalLabelSequence = getLabels(evalLabelFile, separator)
+      case Some(evalLabelFile) => {
+        val evalLabelSequence = getLabels(evalLabelFile, skipHeader = true)
 
         val evalLabels = (for {
           LabelSpec(nodeName, label, strength) <- evalLabelSequence
@@ -41,10 +40,13 @@ object Junto {
 
         println("Accuracy: " + accuracy)
         println("MRR: " + meanReciprocalRank)
+      }
+      case None => ; // ignore evaluation when evalLabelFile is not specified
     }
 
     // Output predictions if an output file is specified.
-    conf.outputFile.get match {
+    // output predictions are comma seperated
+    conf.outputFile.toOption match {
       case Some(outputFile) =>
 
         val out = createWriter(outputFile)

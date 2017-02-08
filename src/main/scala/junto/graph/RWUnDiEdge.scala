@@ -1,6 +1,5 @@
 package junto.graph
 
-import scalax.collection.GraphPredef._
 import scalax.collection.GraphEdge._
 
 class RWUnDiEdge[N](
