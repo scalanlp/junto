@@ -29,7 +29,7 @@ object Junto {
     conf.evalLabelFile.toOption match {
 
       case Some(evalLabelFile) => {
-        val evalLabelSequence = getLabels(evalLabelFile, separator)
+        val evalLabelSequence = getLabels(evalLabelFile, skipHeader = true)
 
         val evalLabels = (for {
           LabelSpec(nodeName, label, strength) <- evalLabelSequence
@@ -45,6 +45,7 @@ object Junto {
     }
 
     // Output predictions if an output file is specified.
+    // output predictions are comma seperated
     conf.outputFile.toOption match {
       case Some(outputFile) =>
 
